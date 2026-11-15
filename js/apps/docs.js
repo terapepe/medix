@@ -80,8 +80,8 @@
           <li>Knows the project: token, symbol, networks, contract addresses, commands — read from the live configuration.</li>
           <li>Fetches real data itself: token market & network status, ICD-10 codes, conditions, FDA labels & recalls, PubMed, clinical calculators. Each tool call appears as an <code>[EXEC]</code> line.</li>
           <li>Can open OS windows for you (dashboard, docs…).</li>
-          <li>Two engines: <b>Claude</b> (full conversation, when the server key is set) and a free <b>local engine</b> that understands simple questions in English or Vietnamese. Set <code>ai.mode</code> in config: <code>auto</code> | <code>local</code> | <code>claude</code>. In auto mode it falls back to local if Claude is unavailable.</li>
-          <li>Answers in your language. <code>medix reset</code> wipes the conversation (kept only in this browser tab).</li>
+          <li>Two engines: <b>Claude</b> (full conversation, when the server key is set) and a free <b>local engine</b> that understands simple questions. Set <code>ai.mode</code> in config: <code>auto</code> | <code>local</code> | <code>claude</code>. In auto mode it falls back to local if Claude is unavailable.</li>
+          <li><code>medix reset</code> wipes the conversation (kept only in this browser tab).</li>
         </ul>
         <div class="alert"><p>AI can make mistakes. It does not diagnose, prescribe or give financial advice.</p></div>`,
     },

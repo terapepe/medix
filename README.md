@@ -22,7 +22,7 @@ python3 -m http.server 8000
 
 `medix` / `chat` opens the AI window. The browser talks to `api/chat.js` (Vercel serverless), which calls the Claude API — the key never reaches the client. The AI reads project facts from `js/config.js` and fetches live data through tools (token market, network status, ICD-10, conditions, FDA labels/recalls, PubMed, calculators, open windows).
 
-**Free mode:** without `ANTHROPIC_API_KEY` (or with `ai.mode: "local"` in `js/config.js`) MEDIX runs a free local engine (`js/apps/ai-local.js`) — simple questions in English/Vietnamese (project, token, CA, networks, price, ICD-10, drug label, recalls, PubMed, BMI/eGFR…) answered with live data. `ai.mode: "auto"` (default) uses Claude when the key is set and falls back to local if Claude fails.
+**Free mode:** without `ANTHROPIC_API_KEY` (or with `ai.mode: "local"` in `js/config.js`) MEDIX runs a free local engine (`js/apps/ai-local.js`) — simple questions (project, token, CA, networks, price, ICD-10, drug label, recalls, PubMed, BMI/eGFR…) answered with live data. `ai.mode: "auto"` (default) uses Claude when the key is set and falls back to local if Claude fails.
 
 Set in **Vercel → Project → Settings → Environment Variables**, then redeploy:
 
