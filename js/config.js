@@ -116,6 +116,10 @@ window.MEDIX_CONFIG = {
 
   /** MEDIX AI chat (Claude via the Vercel function api/chat.js — API key lives in Vercel env vars). */
   ai: {
+    // "auto"   → Claude when ANTHROPIC_API_KEY is set on Vercel, otherwise the free local engine
+    // "local"  → always the free local engine (no API cost, simple questions only)
+    // "claude" → Claude only (no fallback)
+    mode: "auto",
     endpoint: "/api/chat",
     maxToolRounds: 5,              // max live-data tool calls per answer
     historyLimit: 24,              // messages kept in context

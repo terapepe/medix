@@ -2,7 +2,7 @@
 (function () {
   const CFG = window.MEDIX_CONFIG;
   const D = CFG.data;
-  const AI = Object.assign({ endpoint: "/api/chat", maxToolRounds: 5, historyLimit: 24 }, CFG.ai || {});
+  const AI = Object.assign({ mode: "auto", endpoint: "/api/chat", maxToolRounds: 5, historyLimit: 24 }, CFG.ai || {});
   const SKEY = "medcore.ai.chat";
   const cut = (s, n = 1200) => { s = String(s ?? "").replace(/\s+/g, " ").trim(); return s.length > n ? s.slice(0, n) + "…" : s; };
 
@@ -125,15 +125,55 @@
       return d;
     },
 
+    engine: "local",   // "claude" when the server key is configured, otherwise the free local engine
+    ready: null,
+
+    /** Pick the engine: config ai.mode = "auto" | "local" | "claude". */
     async status() {
-      try {
-        const r = await fetch(AI.endpoint, { method: "GET" });
-        const j = await r.json();
-        if (!j.configured) return this.line(`<span class="tag warn">[WARN]</span> AI core offline — server key not configured (ANTHROPIC_API_KEY).`);
-        this.line(`<span class="tag ok">[ OK ]</span> neural link established <span class="dim">· model ${U.esc(j.model)}</span>`);
-      } catch {
-        this.line(`<span class="tag err">[FAIL]</span> AI endpoint unreachable <span class="dim">(${U.esc(AI.endpoint)} — deploy on Vercel)</span>`);
+      if (AI.mode === "local") {
+        this.engine = "local";
+        return this.line(`<span class="tag ok">[ OK ]</span> local engine online <span class="dim">· free mode, simple questions</span>`);
       }
+      try {
+        const j = await (await fetch(AI.endpoint, { method: "GET" })).json();
+        if (!j.configured) throw new Error("key not configured");
+        this.engine = "claude";
+        this.line(`<span class="tag ok">[ OK ]</span> neural link established <span class="dim">· model ${U.esc(j.model)}</span>`);
+      } catch (e) {
+        this.engine = AI.mode === "claude" ? "claude" : "local";
+        this.line(this.engine === "local"
+          ? `<span class="tag ok">[ OK ]</span> local engine online <span class="dim">· free mode, simple questions</span>`
+          : `<span class="tag err">[FAIL]</span> AI endpoint unavailable <span class="dim">(${U.esc(e.message)})</span>`);
+      }
+    },
+
+    /** Run one live-data tool with an [EXEC] line; throws on failure. */
+    async exec(name, input = {}) {
+      const arg = Object.values(input).join(", ");
+      const ln = this.line(`<span class="tag proc">[EXEC]</span> ${U.esc(name)}(${U.esc(cut(arg, 60))}) <span class="dim">PROCESSING</span>`, "t");
+      const t0 = performance.now();
+      try {
+        const out = await (TOOLS[name] ? TOOLS[name](input) : Promise.reject(new Error("unknown tool")));
+        ln.innerHTML = `<span class="tag ok">[EXEC]</span> ${U.esc(name)}(${U.esc(cut(arg, 60))}) <span class="dim">${Math.round(performance.now() - t0)}ms</span>`;
+        return out;
+      } catch (e) {
+        ln.innerHTML = `<span class="tag err">[EXEC]</span> ${U.esc(name)} <span class="dim">— ${U.esc(e.message)}</span>`;
+        throw e;
+      }
+    },
+
+    /** Free local engine answer, typed out like a stream. */
+    async local(text) {
+      const out = await LocalBot.reply(text, { exec: (n, i) => this.exec(n, i) });
+      const el = this.line(`<span class="who ai">medix&gt;</span> <span class="txt"></span><span class="cur">█</span>`, "a").querySelector(".txt");
+      for (let i = 0; i <= out.length; i += 4) {
+        el.innerHTML = md(out.slice(0, i));
+        this.log.scrollTop = this.log.scrollHeight;
+        if (!U.reduced()) await U.sleep(10);
+      }
+      el.innerHTML = md(out);
+      el.parentElement.querySelector(".cur")?.remove();
+      this.msgs.push({ role: "assistant", content: [{ type: "text", text: out }] });
     },
 
     async send(text) {
@@ -144,7 +184,9 @@
       this.line(`<span class="who you">${U.esc(Shell.user())}&gt;</span> ${U.esc(text)}`, "u");
       this.msgs.push({ role: "user", content: text });
       Log.push("cmd", `medix ← "${cut(text, 60)}"`);
+      await this.ready;
       try {
+        if (this.engine === "local") { await this.local(text); return; }
         for (let round = 0; round <= AI.maxToolRounds; round++) {
           const { blocks, stop } = await this.stream();
           const content = blocks.filter((b) => (b.type === "text" ? b.text.trim() : true)).map((b) => (b.type === "text" ? { type: "text", text: b.text } : { type: "tool_use", id: b.id, name: b.name, input: b.input }));
@@ -152,15 +194,10 @@
           if (stop !== "tool_use") break;
           const results = [];
           for (const b of blocks.filter((x) => x.type === "tool_use")) {
-            const arg = Object.values(b.input || {}).join(", ");
-            const ln = this.line(`<span class="tag proc">[EXEC]</span> ${U.esc(b.name)}(${U.esc(cut(arg, 60))}) <span class="dim">PROCESSING</span>`, "t");
-            const t0 = performance.now();
             try {
-              const out = await (TOOLS[b.name] ? TOOLS[b.name](b.input || {}) : Promise.reject(new Error("unknown tool")));
-              ln.innerHTML = `<span class="tag ok">[EXEC]</span> ${U.esc(b.name)}(${U.esc(cut(arg, 60))}) <span class="dim">${Math.round(performance.now() - t0)}ms</span>`;
+              const out = await this.exec(b.name, b.input || {});
               results.push({ type: "tool_result", tool_use_id: b.id, content: JSON.stringify(out).slice(0, 12000) });
             } catch (e) {
-              ln.innerHTML = `<span class="tag err">[EXEC]</span> ${U.esc(b.name)} <span class="dim">— ${U.esc(e.message)}</span>`;
               results.push({ type: "tool_result", tool_use_id: b.id, content: "Tool error: " + e.message, is_error: true });
             }
           }
@@ -168,9 +205,15 @@
           if (round === AI.maxToolRounds) this.line(`<span class="tag warn">[WARN]</span> tool round limit reached`);
         }
       } catch (e) {
-        this.line(`<span class="tag err">[FAIL]</span> ${U.esc(e.message)}`);
-        // drop the unanswered turn so the conversation stays valid
+        // drop the unanswered Claude turn so the conversation stays valid
         while (this.msgs.length && this.msgs[this.msgs.length - 1].role === "user") this.msgs.pop();
+        if (this.engine === "claude" && AI.mode !== "claude") {
+          // Claude unavailable (no credit, rate limit, outage) → answer with the free engine
+          this.line(`<span class="tag warn">[WARN]</span> neural core unavailable (${U.esc(e.message)}) — switching to local engine`);
+          this.engine = "local";
+          this.msgs.push({ role: "user", content: text });
+          try { await this.local(text); } catch (e2) { this.line(`<span class="tag err">[FAIL]</span> ${U.esc(e2.message)}`); }
+        } else this.line(`<span class="tag err">[FAIL]</span> ${U.esc(e.message)}`);
       } finally {
         this.save();
         this.busy = false;
@@ -232,7 +275,7 @@
     greet() {
       this.line(`<pre class="acc neo">${U.esc(window.ASCII_LOGO.join("\n"))}</pre>`);
       this.line(`<span class="acc">MEDIX AI</span> <span class="dim">· resident intelligence of ${U.esc(CFG.brand.os)} · ask about the project, $${U.esc(CFG.token.symbol)}, or medical reference data</span>`);
-      this.status();
+      this.ready = this.status();
       const ex = ["What is medix?", `Show $${CFG.token.symbol} live market data`, "ICD-10 code for type 2 diabetes", "Latest PubMed research on AI sepsis detection", "Recalls for metformin"];
       this.line(ex.map((q) => `<button class="btn mini" data-ask="${U.esc(q)}">${U.esc(q)}</button>`).join(" "), "ex");
     },
