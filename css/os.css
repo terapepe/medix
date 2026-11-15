@@ -105,6 +105,8 @@ body.glitching { animation: glitch .12s steps(2) 4; }
 .boot-log { flex: 1; overflow-y: auto; }
 .bl { white-space: pre-wrap; min-height: 1.5em; }
 .bl.ll { white-space: normal; margin-top: 12px; }
+.boot-info { display: grid; gap: 4px; border-left: 2px solid var(--acc); padding: 4px 0 4px 10px; }
+.boot-info code { word-break: break-all; }
 .boot-skip { position: absolute; right: 16px; bottom: 12px; animation: blink 1.2s steps(1) infinite; }
 .wordmark { color: var(--acc); font-size: clamp(6px, 2.1vw, 15px); line-height: 1.12; margin: 14px 0 6px; white-space: pre; text-shadow: 0 0 10px var(--a40), 0 0 24px var(--a20); }
 .granted {

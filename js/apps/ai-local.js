@@ -63,7 +63,7 @@
     },
     {
       words: ["network", "networks", "chain", "chains", "solana", "base", "bsc", "bnb", "robinhood"],
-      run: () => `Mode: **${Chain.isSingle() ? "SINGLE" : "MULTI"}** — ${nets()}.${Chain.isSingle() ? "" : " Robinhood, Base and BSC share one EVM contract; Solana uses its own mint."} Run \`net\` for live status.`,
+      run: () => `Networks: **${nets()}**.${Chain.isSingle() ? "" : " Robinhood, Base and BSC share one EVM contract; Solana uses its own mint."} Run \`net\` for live status.`,
     },
     {
       words: ["twitter", "x", "social", "community", "telegram"],

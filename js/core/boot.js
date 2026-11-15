@@ -62,7 +62,7 @@
       for (let i = 0; i <= 24; i++) { pb.textContent = `[${"█".repeat(i)}${"░".repeat(24 - i)}] ${Math.round((i / 24) * 100)}%`; await this.wait(22); }
 
       // SCANNING: real RPC handshake
-      this.line(`<span class="acc">SCANNING NETWORK UPLINKS</span> <span class="dim">mode=${Chain.isSingle() ? "single" : "multi"}</span>`);
+      this.line(`<span class="acc">SCANNING NETWORK UPLINKS</span> <span class="dim">mode=${Chain.label("id", ",")}</span>`);
       const nets = Chain.list();
       const rows = nets.map((n) => this.line(`  ${Chain.icon(n, 13)} ${U.pad(n.uplink, 22).replace(/ /g, "&nbsp;")} <span class="dim">handshake…</span>`));
       if (CFG.boot.pingNetworks) {
@@ -81,6 +81,10 @@
       this.line(`<span class="dim">${U.esc(CFG.brand.os)} v${CFG.brand.version} · ${U.esc(CFG.brand.tagline)}${th.net ? " · " + U.esc(th.net.uplink) : ""}</span>`);
       await this.wait(200);
 
+      // token + official channel, visible before login
+      this.line(`<div class="boot-info">${Chain.caGroups().map((g) => `<div>${g.nets.map((n) => Chain.icon(n, 14)).join("")} <span class="dim">${g.nets.map((n) => n.short).join(" / ")}</span> <span class="acc">$${U.esc(CFG.token.symbol)} CA</span> ${g.ca ? `<code>${U.esc(g.ca)}</code> <button class="btn mini" data-copy="${U.esc(g.ca)}">COPY</button>` : `<span class="warn">PENDING DEPLOYMENT</span>`}</div>`).join("")}
+        <div><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true" style="vertical-align:-2px"><path fill="currentColor" d="M18.9 2H22l-7.6 8.7L23 22h-6.8l-5.3-6.9L4.8 22H1.7l8.1-9.3L1 2h6.9l4.8 6.4L18.9 2Zm-1.2 18h1.7L6.4 3.9H4.6L17.7 20Z"/></svg> <a href="${CFG.social.x}" target="_blank" rel="noopener">${U.esc(CFG.social.xHandle)}</a></div></div>`, "ll");
+
       removeEventListener("keydown", onSkip);
       this.el.querySelector(".boot-skip").remove();
       await this.login();
@@ -88,17 +92,17 @@
 
     login() {
       return new Promise((resolve) => {
-        const saved = localStorage.getItem("medcore.operator") || "";
+        const saved = localStorage.getItem("medcore.operator") || "medix";
         const box = this.line(`
           <form class="login" autocomplete="off">
-            <div><span class="acc">medcore login:</span> <input name="u" maxlength="16" spellcheck="false" autocapitalize="off" value="${U.esc(saved)}" placeholder="operator" aria-label="Callsign"></div>
+            <div><span class="acc">medcore login:</span> <input name="u" maxlength="16" spellcheck="false" autocapitalize="off" value="${U.esc(saved)}" placeholder="medix" aria-label="Callsign"></div>
             <div class="dim small">enter a callsign · ENTER to authenticate</div>
           </form>`, "ll");
         const f = box.querySelector("form"), inp = f.querySelector("input");
         setTimeout(() => inp.focus(), 50);
         f.onsubmit = async (e) => {
           e.preventDefault();
-          const u = (inp.value || "operator").replace(/[^\w.-]/g, "").slice(0, 16) || "operator";
+          const u = (inp.value || "medix").replace(/[^\w.-]/g, "").slice(0, 16) || "medix";
           localStorage.setItem("medcore.operator", u);
           box.innerHTML = `<span class="acc">medcore login:</span> ${U.esc(u)}`;
           this.skip = false;

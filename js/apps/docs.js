@@ -16,8 +16,8 @@
         openFDA (drug labels, recalls) and NCBI PubMed (biomedical literature). The token module reads <b>live market data</b>
         from DexScreener and <b>on-chain state</b> directly from each network's RPC. Nothing on screen is mock or demo data:
         if a source is unreachable the OS reports it.</p>
-        <p><b>${SYM}</b> is the native token of the ${U.esc(CFG.brand.name)} network. Mode:
-        <b>${Chain.isSingle() ? "SINGLE — " + U.esc(Chain.list()[0].name) : "MULTI — " + Chain.list().map((n) => n.name).join(", ")}</b>.</p>
+        <p><b>${SYM}</b> is the native token of the ${U.esc(CFG.brand.name)} network. Network:
+        <b>${U.esc(Chain.label("name", ", "))}</b>.</p>
         <p>Start with ${run("help")}, ${run("token")} or ${run("icd asthma")}.</p>`,
     },
     start: {
@@ -91,7 +91,7 @@
         <table class="doc-tbl">
           <tr><td>Token name</td><td><b>${U.esc(CFG.token.name)}</b></td></tr>
           <tr><td>Symbol</td><td><b>${SYM}</b></td></tr>
-          <tr><td>Mode</td><td>${Chain.isSingle() ? "SINGLE · " + U.esc(Chain.list()[0].name) : "MULTI · Solana, Robinhood, Base, BSC"}</td></tr>
+          <tr><td>Network</td><td>${U.esc(Chain.label("name", ", "))}</td></tr>
           <tr><td>X</td><td><a href="${CFG.social.x}" target="_blank" rel="noopener">${U.esc(CFG.social.xHandle)}</a></td></tr>
         </table>
         <h3>CONTRACT ADDRESSES</h3>

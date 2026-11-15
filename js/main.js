@@ -21,7 +21,7 @@
       <button class="sb-brand" data-run="neofetch" title="${U.esc(CFG.brand.os)}">
         ${U.logo(20)}<b>${U.esc(CFG.brand.os)}</b><span class="dim">v${U.esc(CFG.brand.version)}</span>
       </button>
-      <span class="sb-mode">${Chain.isSingle() ? Chain.icon(Chain.list()[0], 14) + " " + U.esc(Chain.list()[0].short) : "MULTI"}</span>
+      <span class="sb-mode">${Chain.list().map((n) => Chain.icon(n, 14) + " " + U.esc(n.short)).join(" ")}</span>
       <span class="sb-ca">${groups.map((g) => `
         <span class="chip" title="${g.ca ? U.esc(g.ca) : "CA pending"}">
           <span class="ca-icons">${g.nets.map((n) => Chain.icon(n, 14)).join("")}</span>
@@ -60,7 +60,7 @@
     sh.print(`<pre class="neo acc">${U.esc(window.ASCII_LOGO.join("\n"))}</pre>`);
     await sh.typed(`${CFG.brand.os} v${CFG.brand.version} — ${CFG.brand.tagline}`, "acc");
     sh.print(`<span class="dim">session opened for</span> <span class="acc">${U.esc(sh.user())}</span> <span class="dim">· ${new Date().toUTCString()}</span>`);
-    sh.print(`<span class="dim">network mode:</span> ${Chain.isSingle() ? "SINGLE · " + Chain.icon(Chain.list()[0], 13) + " " + U.esc(Chain.list()[0].name) : "MULTI · " + Chain.list().map((n) => Chain.icon(n, 13) + " " + n.short).join("  ")}`);
+    sh.print(`<span class="dim">network:</span> ${Chain.list().map((n) => Chain.icon(n, 13) + " " + U.esc(Chain.isSingle() ? n.name : n.short)).join("  ")}`);
     Chain.caGroups().forEach((g) => sh.print(`<span class="dim">${SYM} CA</span> ${g.nets.map((n) => Chain.icon(n, 13)).join("")} ${g.ca ? `<code class="acc">${U.esc(g.ca)}</code> <button class="btn mini" data-copy="${U.esc(g.ca)}">COPY</button>` : `<span class="warn">PENDING DEPLOYMENT</span>`}`));
     sh.print(`type <a href="#" data-run="help">help</a> for commands · <a href="#" data-run="docs">docs</a> for the manual · try <a href="#" data-run="icd asthma">icd asthma</a>`);
   }

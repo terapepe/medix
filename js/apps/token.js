@@ -42,7 +42,7 @@
             ${U.logo(40)}
             <div>
               <div class="dash-sym">${SYM} <span class="dim">/ ${U.esc(CFG.token.name)}</span></div>
-              <div class="dim small">${single ? `SINGLE-NET · ${U.esc(Chain.list()[0].uplink)}` : "MULTI-NET · " + Chain.list().map((n) => n.short).join(" / ")}</div>
+              <div class="dim small">${single ? U.esc(Chain.list()[0].uplink) : Chain.label()}</div>
             </div>
             <div class="dash-ctl">
               <span class="dim small" data-upd>—</span>
@@ -163,7 +163,7 @@ ${cbar("h24")}</pre>
         render(b) {
           b.innerHTML = `<div class="pad">
             <pre class="dim">TOKEN   ${U.esc(CFG.token.name)} (${SYM})
-MODE    ${Chain.isSingle() ? "SINGLE · " + U.esc(Chain.list()[0].name) : "MULTI · Robinhood / Base / BSC share one EVM contract"}</pre>
+NETWORK ${U.esc(Chain.label("name"))}${Chain.isSingle() ? "" : " · Robinhood / Base / BSC share one EVM contract"}</pre>
             <div class="ca-block">${CA.html()}</div>
             <p class="dim small">Always verify the contract address from official ${U.esc(CFG.social.xHandle)} channels before interacting.</p></div>`;
           CA.bind(b);

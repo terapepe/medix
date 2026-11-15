@@ -41,7 +41,7 @@ CPU CORES  ${navigator.hardwareConcurrency || "n/a"}   DEVICE MEM ${navigator.de
 LINK       ${navigator.onLine ? "ONLINE" : "OFFLINE"} ${c.effectiveType ? "· " + c.effectiveType.toUpperCase() : ""}${c.rtt != null ? " · rtt " + c.rtt + "ms" : ""}
 VIEWPORT   ${innerWidth}×${innerHeight} @${devicePixelRatio}x
 WINDOWS    ${WM.wins.size}   COMMANDS ${Shell.count}   NET I/O ${nets}   ERRORS ${errs}
-MODE       ${Chain.isSingle() ? "SINGLE · " + Chain.list()[0].name : "MULTI · " + Chain.list().length + " networks"}`;
+NETWORK    ${Chain.label("name")}`;
             s.textContent = Log.items.slice(-10).map((e) => `${U.time(e.t)} ${U.pad(e.level.toUpperCase(), 4)} ${e.msg}`).join("\n");
           };
           draw();
@@ -82,7 +82,7 @@ MODE       ${Chain.isSingle() ? "SINGLE · " + Chain.list()[0].name : "MULTI · 
   Shell.reg("net", {
     group: "TOKEN", usage: "net", desc: "Handshake every active network (RPC height + latency)", alias: ["chains", "uplink"],
     async run(a, sh) {
-      sh.info(`MODE ${Chain.isSingle() ? "SINGLE" : "MULTI"} · probing ${Chain.list().length} network(s)`);
+      sh.info(`probing ${U.esc(Chain.label())}`);
       const res = await sh.task("RPC handshake", Promise.all(Chain.list().map(async (n) => [n, await Chain.ping(n.id)])));
       sh.table([["NET", "STATUS", "HEIGHT", "LATENCY", "CA"], ...res.map(([n, p]) => [
         `${Chain.icon(n, 13)} ${n.short}`,
@@ -127,7 +127,7 @@ MODE       ${Chain.isSingle() ? "SINGLE · " + Chain.list()[0].name : "MULTI · 
         `<span class="acc">Kernel</span>  medix-neural ${U.esc(CFG.brand.version)}`,
         `<span class="acc">Uptime</span>  ${U.uptime(performance.now() - T0)}`,
         `<span class="acc">Token</span>   ${U.esc(CFG.token.name)} ($${U.esc(CFG.token.symbol)})`,
-        `<span class="acc">Mode</span>    ${Chain.isSingle() ? "SINGLE" : "MULTI"} · ${Chain.list().map((n) => Chain.icon(n, 12) + " " + n.short).join(" ")}`,
+        `<span class="acc">Network</span> ${Chain.list().map((n) => Chain.icon(n, 12) + " " + n.short).join(" ")}`,
         `<span class="acc">Shell</span>   medsh · ${Object.keys(sh.cmds).length} commands`,
         `<span class="acc">X</span>       <a href="${CFG.social.x}" target="_blank" rel="noopener">${U.esc(CFG.social.xHandle)}</a>`,
       ];

@@ -14,7 +14,7 @@
     out: null,
     input: null,
 
-    user() { return localStorage.getItem(UKEY) || "operator"; },
+    user() { return localStorage.getItem(UKEY) || "medix"; },
 
     /** Register a command: { group, usage, desc, alias:[], run(args, sh) } */
     reg(name, def) {
@@ -68,7 +68,7 @@
     focusInput() { if (this.input && !U.mobile()) this.input.focus({ preventScroll: true }); },
 
     setPrompt() {
-      const net = Chain.isSingle() ? Chain.singleId() : "multi";
+      const net = Chain.isSingle() ? Chain.singleId() : Chain.label("short", "+").toLowerCase();
       const p = this.form && this.form.querySelector(".prompt");
       if (p) p.innerHTML = `<span class="p-user">${U.esc(this.user())}</span><span class="p-rest">@<span class="p-host">medcore</span>:<span class="p-net">${net}</span></span><span class="p-sym">$</span>`;
     },

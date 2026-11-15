@@ -12,6 +12,8 @@
       if (Chain.isSingle()) return [Chain.get(Chain.singleId())];
       return [...new Set([...(CFG.multiOrder || []), ...ALL])].filter((id) => CFG.networks[id]).map(Chain.get);
     },
+    /** Active networks as text, e.g. "robinhood" or "Solana / Robinhood / Base / BSC". */
+    label(key = "short", sep = " / ") { return Chain.list().map((n) => n[key]).join(sep); },
     get(id) { const n = CFG.networks[id]; return n ? { id, ...n } : null; },
     resolve(q) {
       if (!q) return null;
