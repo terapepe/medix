@@ -112,7 +112,14 @@ window.MEDIX_CONFIG = {
   },
 
   /** Desktop layout on load (apps opened next to the terminal; ignored on mobile). */
-  autostart: ["token"],
+  autostart: ["token"],          // e.g. ["token", "medix"]
+
+  /** MEDIX AI chat (Claude via the Vercel function api/chat.js — API key lives in Vercel env vars). */
+  ai: {
+    endpoint: "/api/chat",
+    maxToolRounds: 5,              // max live-data tool calls per answer
+    historyLimit: 24,              // messages kept in context
+  },
 
   /** Real public data sources. */
   data: {

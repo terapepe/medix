@@ -18,6 +18,22 @@ python3 -m http.server 8000
 # open http://localhost:8000      (add ?noboot to skip the boot sequence)
 ```
 
+## MEDIX AI (chat) — Vercel environment variables
+
+`medix` / `chat` opens the AI window. The browser talks to `api/chat.js` (Vercel serverless), which calls the Claude API — the key never reaches the client. The AI reads project facts from `js/config.js` and fetches live data through tools (token market, network status, ICD-10, conditions, FDA labels/recalls, PubMed, calculators, open windows).
+
+Set in **Vercel → Project → Settings → Environment Variables**, then redeploy:
+
+| Variable | Required | Default | Purpose |
+|---|---|---|---|
+| `ANTHROPIC_API_KEY` | **yes** | — | Claude API key (console.anthropic.com) |
+| `MEDIX_MODEL` | no | `claude-sonnet-5-5` | e.g. `claude-haiku-5-5` for lower cost |
+| `MEDIX_MAX_TOKENS` | no | `1024` | Max tokens per reply (cap 4096) |
+| `MEDIX_RATE_LIMIT` | no | `40` | Requests per IP per hour (per function instance) |
+| `MEDIX_ALLOWED_ORIGINS` | no | `https://medix.wiki,https://www.medix.wiki` | Sites allowed to call `/api/chat` (add your `*.vercel.app` preview URL if needed) |
+
+Check: `GET https://medix.wiki/api/chat` → `{"ok":true,"configured":true}`.
+
 ## Configuration — `js/config.js`
 
 Everything that may change later is in one file:
@@ -51,7 +67,7 @@ While a CA is empty the UI shows **PENDING DEPLOYMENT** and copy buttons are dis
 
 | Group | Commands |
 |---|---|
-| Apps | `docs [section]`, `token`, `ca`, `sysmon`, `logs`, `config` |
+| Apps | `medix [question\|reset]`, `docs [section]`, `token`, `ca`, `sysmon`, `logs`, `config` |
 | Token | `token`, `ca [copy] [net]`, `net`, `scan <wallet>` |
 | Medical | `icd <term>`, `cond <condition>`, `drug <name>`, `recall <drug>`, `pubmed <query>`, `calc <bmi\|bsa\|map\|egfr> …` |
 | System | `help`, `clear`, `login <callsign>`, `history`, `ls`, `open`, `close`, `ps`, `whoami`, `date`, `neofetch`, `diag`, `x`, `reboot` |
@@ -85,7 +101,9 @@ js/core/fx.js              matrix rain, CRT, glitch, typing, decode
 js/core/wm.js              window manager (drag, resize, min/max/close, tmux bar)
 js/core/shell.js           command shell + built-ins
 js/core/boot.js            boot sequence + login
-js/apps/*.js               token, medical, system, docs modules
+js/apps/*.js               token, medical, system, docs, ai (MEDIX AI) modules
+api/chat.js                Vercel function: Claude API proxy (system prompt, tools, rate limit)
+vercel.json                function settings (bundles js/config.js)
 assets/                    logo, wordmark, favicon, og image, network icons
 ```
 

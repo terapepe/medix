@@ -71,6 +71,19 @@
         <div class="alert"><p><b>⚕ Not medical advice.</b> Outputs are reference information from public datasets. They are not a diagnosis,
         prescription or treatment plan. Always consult a licensed clinician. In an emergency call your local emergency number.</p></div>`,
     },
+    ai: {
+      title: "03b · MEDIX AI",
+      html: () => `
+        <p><b>MEDIX AI</b> is the resident intelligence of ${U.esc(CFG.brand.os)}. Open it with ${run("medix")} or ask directly:
+        <code>medix what is ${U.esc(CFG.brand.name)}?</code></p>
+        <ul>
+          <li>Knows the project: token, symbol, networks, contract addresses, commands — read from the live configuration.</li>
+          <li>Fetches real data itself: token market & network status, ICD-10 codes, conditions, FDA labels & recalls, PubMed, clinical calculators. Each tool call appears as an <code>[EXEC]</code> line.</li>
+          <li>Can open OS windows for you (dashboard, docs…).</li>
+          <li>Answers in your language. <code>medix reset</code> wipes the conversation (kept only in this browser tab).</li>
+        </ul>
+        <div class="alert"><p>AI can make mistakes. It does not diagnose, prescribe or give financial advice.</p></div>`,
+    },
     token: {
       title: "04 · TOKEN",
       html: () => `
@@ -121,8 +134,9 @@
       title: "06 · DATA & PRIVACY",
       html: () => `
         <ul>
-          <li>Static site — no backend, no accounts, no analytics.</li>
+          <li>No accounts, no analytics. The only server code is the MEDIX AI proxy.</li>
           <li>Queries go directly from your browser to: DexScreener, network RPCs, NLM Clinical Tables, openFDA, NCBI.</li>
+          <li>MEDIX AI messages are sent to <code>/api/chat</code> and processed by the Claude API (Anthropic). No chat logs are stored by this site.</li>
           <li>Local storage keys: <code>medcore.operator</code> (callsign), <code>medcore.history</code> (command history), <code>medcore.fx.*</code> (effect toggles). Clear with <code>history clear</code> or your browser settings.</li>
           <li>Do not enter personal health information — queries are sent to third-party public APIs.</li>
         </ul>`,

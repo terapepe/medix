@@ -44,7 +44,7 @@
       this.setPrompt();
 
       const chips = body.querySelector(".chips");
-      ["help", "token", "ca", "docs", "sysmon", "net", "icd fever", "drug aspirin", "pubmed sepsis", "logs"].forEach((c) => {
+      ["medix", "help", "token", "ca", "docs", "sysmon", "net", "icd fever", "drug aspirin", "pubmed sepsis", "logs"].forEach((c) => {
         const b = document.createElement("button");
         b.type = "button"; b.textContent = c;
         b.onclick = () => this.exec(c);

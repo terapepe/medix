@@ -134,6 +134,8 @@ HITS   ${U.num(+s.esearchresult.count, 0)} (showing ${items.length}, by relevanc
       },
     },
   };
+  window.MedCalc = calcs; // shared with the MEDIX AI tools
+
   Shell.reg("calc", {
     group: "MEDICAL", usage: "calc <bmi|bsa|map|egfr> …", desc: "CLINIC-CALC · clinical formulas",
     run(a, sh) {
