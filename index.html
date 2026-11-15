@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>MEDCORE OS — medix</title>
+  <meta name="description" content="MEDCORE OS by medix — a medical-AI operations core that runs in your browser. Command-driven modules for ICD-10, FDA drug labels, recalls, PubMed and the $MDX token dashboard.">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="MEDCORE OS — medix">
+  <meta property="og:description" content="Log in to the medical-AI operations core. $MDX.">
+  <meta property="og:url" content="https://medix.wiki/">
+  <meta property="og:image" content="https://medix.wiki/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@medixwiki">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/os.css">
+</head>
+<body>
+  <canvas id="matrix" aria-hidden="true"></canvas>
+
+  <div id="boot" hidden></div>
+
+  <div id="os" hidden>
+    <header id="sysbar"></header>
+    <main id="desktop"></main>
+    <footer id="taskbar">
+      <button id="tb-term" class="tb-btn" title="Terminal (Ctrl+K)">&gt;_</button>
+      <button id="tb-launch" class="tb-btn" title="List applications">ls</button>
+      <span class="tb-sep">│</span>
+      <span id="tasks"></span>
+      <span class="tb-hint dim">Ctrl+K terminal · help</span>
+    </footer>
+  </div>
+
+  <div id="crt" aria-hidden="true"></div>
+
+  <noscript><pre style="color:#00FFC6;padding:2rem">MEDCORE OS requires JavaScript.</pre></noscript>
+
+  <script src="js/config.js"></script>
+  <script src="js/core/utils.js"></script>
+  <script src="js/core/chain.js"></script>
+  <script src="js/core/fx.js"></script>
+  <script src="js/core/wm.js"></script>
+  <script src="js/core/shell.js"></script>
+  <script src="js/core/boot.js"></script>
+  <script src="js/apps/system.js"></script>
+  <script src="js/apps/token.js"></script>
+  <script src="js/apps/medical.js"></script>
+  <script src="js/apps/docs.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
