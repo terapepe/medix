@@ -26,16 +26,8 @@ window.MEDIX_CONFIG = {
     x: "https://x.com/medixwiki",
     xHandle: "@medixwiki",
   },
-
-  /**
-   * Network mode
-   *  "single" → only `singleNetwork` is shown. The whole OS (accent colors,
-   *             boot uplink, prompt, dashboard layout) is themed for that network.
-   *  "multi"  → always all 4 networks (Solana, Robinhood, Base, BSC),
-   *             ordered by `multiOrder`. Robinhood / Base / BSC share `token.evm`.
-   */
-  mode: "multi",
-  singleNetwork: "solana",         // solana | robinhood | base | bsc
+  mode: "single",
+  singleNetwork: "robinhood",         // solana | robinhood | base | bsc
   multiOrder: ["solana", "robinhood", "base", "bsc"],
 
   networks: {
