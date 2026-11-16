@@ -11,7 +11,7 @@ window.MEDIX_CONFIG = {
     name: "medix",                 // Token Name
     symbol: "MDX",                 // Token symbol (shown as $MDX)
     // EVM contract address — shared by Robinhood, Base and BSC.
-    evm: "",
+    evm: "0x579317261b896e94399881f3f7E51c375CCA03d2",
     // Solana mint address.
     sol: "",
   },
