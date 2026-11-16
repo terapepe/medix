@@ -1,9 +1,3 @@
-/**
- * MEDCORE OS — medix.wiki
- * ------------------------------------------------------------
- * Every brand / token / network / mode setting lives in this file.
- * Edit it (e.g. directly on GitHub) and redeploy — no build step.
- */
 window.MEDIX_CONFIG = {
   brand: {
     name: "medix",                 // brand name (lowercase wordmark)
@@ -17,7 +11,7 @@ window.MEDIX_CONFIG = {
     name: "medix",                 // Token Name
     symbol: "MDX",                 // Token symbol (shown as $MDX)
     // EVM contract address — shared by Robinhood, Base and BSC.
-    evm: "0xE308Acfe0C23979C9d1Dab78F7074846455500d9",
+    evm: "",
     // Solana mint address.
     sol: "",
   },
